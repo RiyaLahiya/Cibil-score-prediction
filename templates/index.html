@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Prediction</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Credit Risk Predictor</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Smart Credit Risk Assessment</h1>
+            <p>Make data-driven decisions with our AI-powered risk prediction system that analyzes and predicts creditworthiness with precision</p>
+            <a href="#check-risk" class="cta-button">Get Started <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card" id="check-risk">
+            <div class="progress-bar step-1">
+                <div class="step active">
+                    <i class="fas fa-user"></i>
+                    <p>Personal Info</p>
+                </div>
+                <div class="step">
+                    <i class="fas fa-home"></i>
+                    <p>Home & Employment</p>
+                </div>
+                <div class="step">
+                    <i class="fas fa-money-bill"></i>
+                    <p>Loan Details</p>
+                </div>
+            </div>
+
+            <h2 class="text-center mb-2">Check Your Credit Risk Score</h2>
+            <form method="POST" action="/predict" class="p-2" id="riskForm">
+                <div class="form-sections">
+                    <!-- Section 1: Personal Information -->
+                    <div class="form-section active" id="section1">
+                        <div class="form-group mb-2">
+                            <label>Age: <span class="tooltip" data-tip="Enter your current age"><i class="fas fa-info-circle"></i></span></label>
+                            <input type="number" name="person_age" required class="rounded" min="18" max="100" placeholder="Enter your age">
+                            <div class="validation-message"></div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label>Annual Income: <span class="tooltip" data-tip="Enter your annual income in rupees"><i class="fas fa-info-circle"></i></span></label>
+                            <div class="input-group">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" name="person_income" required class="rounded" min="100000" placeholder="Annual income (e.g., 500000)">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-2">
+                            <label>Credit History Length (years): <span class="tooltip" data-tip="Number of years you have maintained credit accounts"><i class="fas fa-info-circle"></i></span></label>
+                            <input type="number" name="cb_person_cred_hist_length" required class="rounded" min="0" max="50" placeholder="Credit history in years">
+                        </div>
+                        
+                        <button type="button" class="btn-next">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- Section 2: Home & Employment -->
+                    <div class="form-section" id="section2">
+                        <div class="form-group mb-2">
+                            <label>Home Ownership: <span class="tooltip" data-tip="Select your current home ownership status"><i class="fas fa-info-circle"></i></span></label>
+                            <select name="person_home_ownership" class="rounded">
+                                <option value="RENT">Rent</option>
+                                <option value="MORTGAGE">Mortgage</option>
+                                <option value="OWN">Own</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label>Employment Length (years): <span class="tooltip" data-tip="How long have you been employed at your current job"><i class="fas fa-info-circle"></i></span></label>
+                            <input type="number" step="0.1" name="person_emp_length" required class="rounded" min="0" max="50" placeholder="Years at current job">
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="btn-prev"><i class="fas fa-arrow-left"></i> Previous</button>
+                            <button type="button" class="btn-next">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Loan Details -->
+                    <div class="form-section" id="section3">
+                        <div class="form-group mb-2">
+                            <label>Loan Intent: <span class="tooltip" data-tip="Purpose of the loan"><i class="fas fa-info-circle"></i></span></label>
+                            <select name="loan_intent" class="rounded">
+                                <option value="EDUCATION">Education</option>
+                                <option value="MEDICAL">Medical</option>
+                                <option value="VENTURE">Venture</option>
+                                <option value="PERSONAL">Personal</option>
+                                <option value="HOMEIMPROVEMENT">Home Improvement</option>
+                                <option value="DEBTCONSOLIDATION">Debt Consolidation</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label>Loan Grade: <span class="tooltip" data-tip="Credit grade assigned to the loan (A is best, G is worst)"><i class="fas fa-info-circle"></i></span></label>
+                            <select name="loan_grade" class="rounded">
+                                <option value="A">A (Excellent)</option>
+                                <option value="B">B (Very Good)</option>
+                                <option value="C">C (Good)</option>
+                                <option value="D">D (Fair)</option>
+                                <option value="E">E (Poor)</option>
+                                <option value="F">F (Very Poor)</option>
+                                <option value="G">G (Worst)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label>Loan Amount: <span class="tooltip" data-tip="Amount requested for the loan"><i class="fas fa-info-circle"></i></span></label>
+                            <div class="input-group">
+                                <span class="input-prefix">₹</span>
+                                <input type="number" name="loan_amnt" required class="rounded" min="10000" placeholder="Loan amount (e.g., 100000)">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label>Loan Interest Rate (%): <span class="tooltip" data-tip="Interest rate of the loan"><i class="fas fa-info-circle"></i></span></label>
+                            <div class="range-slider">
+                                <input type="range" min="5" max="25" value="12" class="slider" name="loan_int_rate" id="interestSlider">
+                                <div class="slider-value" id="interestValue">12%</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label>Loan as Percent of Income (%): <span class="tooltip" data-tip="What percentage of your annual income does this loan represent"><i class="fas fa-info-circle"></i></span></label>
+                            <input type="number" step="0.01" name="loan_percent_income" required class="rounded" min="0.01" max="100" placeholder="Enter percentage (e.g., 25.5)">
+                        </div>
+
+                        <div class="button-group">
+                            <button type="button" class="btn-prev"><i class="fas fa-arrow-left"></i> Previous</button>
+                            <button type="submit" class="btn-primary">Predict Risk <i class="fas fa-calculator"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Prediction Result (initially hidden) -->
+            <div class="prediction-result hidden" id="predictionResult">
+                <!-- High Risk Result -->
+                <div class="result-card risk hidden" id="highRiskResult">
+                    <div class="result-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Defaulter</h3>
+                    <p id="highRiskMessage">You're at risk. Improve by: paying on time, reducing debts, and keeping utilization low.</p>
+                </div>
+                
+                <!-- Low Risk Result -->
+                <div class="result-card safe hidden" id="lowRiskResult">
+                    <div class="result-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Not a Defaulter</h3>
+                    <p id="lowRiskMessage">You're in a safe zone. Keep managing your credit responsibly.</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="features-section" id="about">
+        <div class="container">
+            <h2>Why Choose Our Credit Risk Predictor?</h2>
+            <p>Our advanced algorithm analyzes multiple factors to provide accurate risk assessment</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Our machine learning algorithms analyze multiple data points including income, employment history, and loan characteristics to provide accurate risk assessments</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Instant Results</h3>
+                    <p>Get your credit risk assessment in seconds with detailed explanations of the factors affecting your score</p>
+                </div>
+
+                
+            </div>
+        </div>
+    </section>
+
+    <footer id="help">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>We are dedicated to providing accurate and reliable credit risk assessment tools powered by advanced AI algorithms to help individuals and businesses make informed financial decisions.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Credit Risk Predictor. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle tooltips
+        const tooltips = document.querySelectorAll('.tooltip');
+        tooltips.forEach(tooltip => {
+            tooltip.addEventListener('mouseover', function() {
+                const tip = this.getAttribute('data-tip');
+                const tooltipText = document.createElement('span');
+                tooltipText.className = 'tooltip-text';
+                tooltipText.innerText = tip;
+                this.appendChild(tooltipText);
+            });
+            
+            tooltip.addEventListener('mouseout', function() {
+                const tooltipText = this.querySelector('.tooltip-text');
+                if (tooltipText) {
+                    this.removeChild(tooltipText);
+                }
+            });
+        });
+        
+        // Form navigation
+        const sections = document.querySelectorAll('.form-section');
+        const progressBar = document.querySelector('.progress-bar');
+        const steps = document.querySelectorAll('.step');
+        
+        // Next button functionality
+        document.querySelectorAll('.btn-next').forEach(button => {
+            button.addEventListener('click', function() {
+                const currentSection = document.querySelector('.form-section.active');
+                const nextSection = currentSection.nextElementSibling;
+                
+                if (nextSection) {
+                    currentSection.classList.remove('active');
+                    nextSection.classList.add('active');
+                    
+                    // Update progress bar
+                    const currentStep = Array.from(sections).indexOf(nextSection) + 1;
+                    progressBar.className = `progress-bar step-${currentStep}`;
+                    
+                    // Update step indicators
+                    steps.forEach((step, index) => {
+                        if (index < currentStep) {
+                            step.classList.add('active');
+                        } else {
+                            step.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Previous button functionality
+        document.querySelectorAll('.btn-prev').forEach(button => {
+            button.addEventListener('click', function() {
+                const currentSection = document.querySelector('.form-section.active');
+                const prevSection = currentSection.previousElementSibling;
+                
+                if (prevSection) {
+                    currentSection.classList.remove('active');
+                    prevSection.classList.add('active');
+                    
+                    // Update progress bar
+                    const currentStep = Array.from(sections).indexOf(prevSection) + 1;
+                    progressBar.className = `progress-bar step-${currentStep}`;
+                    
+                    // Update step indicators
+                    steps.forEach((step, index) => {
+                        if (index < currentStep) {
+                            step.classList.add('active');
+                        } else {
+                            step.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Range slider functionality
+        const interestSlider = document.getElementById('interestSlider');
+        const interestValue = document.getElementById('interestValue');
+        
+        if (interestSlider && interestValue) {
+            interestSlider.addEventListener('input', function() {
+                interestValue.innerText = this.value + '%';
+                interestValue.style.left = (this.value - this.min) / (this.max - this.min) * 100 + '%';
+            });
+        }
+        
+        // Enhanced Credit Risk Prediction Logic
+        document.getElementById('riskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const age = parseInt(document.querySelector('input[name="person_age"]').value);
+            const income = parseInt(document.querySelector('input[name="person_income"]').value);
+            const homeOwnership = document.querySelector('select[name="person_home_ownership"]').value;
+            const empLength = parseFloat(document.querySelector('input[name="person_emp_length"]').value);
+            const loanIntent = document.querySelector('select[name="loan_intent"]').value;
+            const loanGrade = document.querySelector('select[name="loan_grade"]').value;
+            const loanAmount = parseInt(document.querySelector('input[name="loan_amnt"]').value);
+            const interestRate = parseFloat(document.querySelector('input[name="loan_int_rate"]').value);
+            const loanPercentIncome = parseFloat(document.querySelector('input[name="loan_percent_income"]').value);
+            const creditHistLength = parseInt(document.querySelector('input[name="cb_person_cred_hist_length"]').value);
+            
+            // Calculate risk score (0-100, higher = more risky)
+            let riskScore = 0;
+            const riskFactors = [];
+            const positiveFactors = [];
+            
+            // Age factor (younger = slightly higher risk)
+            if (age < 25) {
+                riskScore += 10;
+                riskFactors.push("Young age may indicate limited financial experience");
+            } else if (age >= 30 && age <= 50) {
+                riskScore -= 5;
+                positiveFactors.push("Mature age indicates financial stability");
+            }
+            
+            // Income factor
+            if (income < 200000) {
+                riskScore += 20;
+                riskFactors.push("Low income may affect repayment capacity");
+            } else if (income >= 500000) {
+                riskScore -= 10;
+                positiveFactors.push("Good income level supports loan repayment");
+            } else if (income >= 1000000) {
+                riskScore -= 15;
+                positiveFactors.push("High income provides strong repayment capacity");
+            }
+            
+            // Home ownership factor
+            switch (homeOwnership) {
+                case 'OWN':
+                    riskScore -= 10;
+                    positiveFactors.push("Home ownership shows financial stability");
+                    break;
+                case 'MORTGAGE':
+                    riskScore -= 5;
+                    positiveFactors.push("Mortgage history indicates creditworthiness");
+                    break;
+                case 'RENT':
+                    riskScore += 5;
+                    break;
+                case 'OTHER':
+                    riskScore += 8;
+                    riskFactors.push("Uncertain housing situation may affect stability");
+                    break;
+            }
+            
+            // Employment length factor
+            if (empLength < 1) {
+                riskScore += 15;
+                riskFactors.push("Short employment history may indicate job instability");
+            } else if (empLength >= 3) {
+                riskScore -= 8;
+                positiveFactors.push("Stable employment history is favorable");
+            } else if (empLength >= 5) {
+                riskScore -= 12;
+                positiveFactors.push("Long-term employment shows excellent stability");
+            }
+            
+            // Credit history length factor
+            if (creditHistLength < 2) {
+                riskScore += 15;
+                riskFactors.push("Limited credit history makes assessment difficult");
+            } else if (creditHistLength >= 5) {
+                riskScore -= 10;
+                positiveFactors.push("Established credit history is positive");
+            } else if (creditHistLength >= 10) {
+                riskScore -= 15;
+                positiveFactors.push("Long credit history demonstrates experience");
+            }
+            
+            // Loan grade factor (most important)
+            switch (loanGrade) {
+                case 'A':
+                    riskScore -= 20;
+                    positiveFactors.push("Excellent loan grade indicates low risk");
+                    break;
+                case 'B':
+                    riskScore -= 10;
+                    positiveFactors.push("Good loan grade is favorable");
+                    break;
+                case 'C':
+                    riskScore += 0;
+                    break;
+                case 'D':
+                    riskScore += 15;
+                    riskFactors.push("Fair loan grade indicates moderate risk");
+                    break;
+                case 'E':
+                    riskScore += 25;
+                    riskFactors.push("Poor loan grade indicates higher risk");
+                    break;
+                case 'F':
+                    riskScore += 35;
+                    riskFactors.push("Very poor loan grade is concerning");
+                    break;
+                case 'G':
+                    riskScore += 45;
+                    riskFactors.push("Worst loan grade indicates very high risk");
+                    break;
+            }
+            
+            // Loan amount vs income factor
+            const loanToIncomeRatio = loanAmount / income;
+            if (loanToIncomeRatio > 5) {
+                riskScore += 20;
+                riskFactors.push("Very high loan amount relative to income");
+            } else if (loanToIncomeRatio > 2) {
+                riskScore += 10;
+                riskFactors.push("High loan amount relative to income");
+            } else if (loanToIncomeRatio < 0.5) {
+                riskScore -= 5;
+                positiveFactors.push("Conservative loan amount relative to income");
+            }
+            
+            // Loan percent income factor
+            if (loanPercentIncome > 40) {
+                riskScore += 25;
+                riskFactors.push("Very high debt-to-income ratio");
+            } else if (loanPercentIncome > 25) {
+                riskScore += 15;
+                riskFactors.push("High debt-to-income ratio");
+            } else if (loanPercentIncome < 15) {
+                riskScore -= 5;
+                positiveFactors.push("Low debt-to-income ratio is favorable");
+            }
+            
+            // Interest rate factor
+            if (interestRate > 20) {
+                riskScore += 15;
+                riskFactors.push("Very high interest rate indicates lender concern");
+            } else if (interestRate > 15) {
+                riskScore += 10;
+                riskFactors.push("High interest rate may indicate risk");
+            } else if (interestRate < 8) {
+                riskScore -= 5;
+                positiveFactors.push("Low interest rate is favorable");
+            }
+            
+            // Loan intent factor
+            switch (loanIntent) {
+                case 'EDUCATION':
+                    riskScore -= 5;
+                    positiveFactors.push("Education loan is generally lower risk");
+                    break;
+                case 'HOMEIMPROVEMENT':
+                    riskScore -= 3;
+                    positiveFactors.push("Home improvement adds value");
+                    break;
+                case 'DEBTCONSOLIDATION':
+                    riskScore += 8;
+                    riskFactors.push("Debt consolidation may indicate existing financial stress");
+                    break;
+                case 'VENTURE':
+                    riskScore += 12;
+                    riskFactors.push("Business ventures carry higher risk");
+                    break;
+            }
+            
+            // Ensure score is within bounds
+            riskScore = Math.max(0, Math.min(100, riskScore + 50)); // Add base score of 50
+            
+            // Determine if high risk (threshold at 60)
+            const isHighRisk = riskScore >= 60;
+            
+            // Display results
+            const predictionResult = document.getElementById('predictionResult');
+            const highRiskResult = document.getElementById('highRiskResult');
+            const lowRiskResult = document.getElementById('lowRiskResult');
+            const riskFactorsList = document.getElementById('riskFactorsList');
+            const positiveFactorsList = document.getElementById('positiveFactorsList');
+            
+            predictionResult.classList.remove('hidden');
+            
+            if (isHighRisk) {
+                highRiskResult.classList.remove('hidden');
+                lowRiskResult.classList.add('hidden');
+                
+                // Populate risk factors
+                riskFactorsList.innerHTML = '';
+                riskFactors.forEach(factor => {
+                    const li = document.createElement('li');
+                    li.textContent = factor;
+                    riskFactorsList.appendChild(li);
+                });
+            } else {
+                lowRiskResult.classList.remove('hidden');
+                highRiskResult.classList.add('hidden');
+                
+                // Populate positive factors
+                positiveFactorsList.innerHTML = '';
+                positiveFactors.forEach(factor => {
+                    const li = document.createElement('li');
+                    li.textContent = factor;
+                    positiveFactorsList.appendChild(li);
+                });
+            }
+            
+            // Scroll to result
+            predictionResult.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Try again button functionality
+        document.querySelectorAll('.result-card .btn-secondary').forEach(button => {
+            button.addEventListener('click', function() {
+                const predictionResult = document.getElementById('predictionResult');
+                predictionResult.classList.add('hidden');
+                
+                // Reset form
+                document.getElementById('riskForm').reset();
+                
+                // Reset interest slider
+                document.getElementById('interestSlider').value = 12;
+                document.getElementById('interestValue').textContent = '12%';
+                
+                // Go back to first section
+                document.querySelectorAll('.form-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById('section1').classList.add('active');
+                
+                // Reset progress bar
+                progressBar.className = 'progress-bar step-1';
+                steps.forEach((step, index) => {
+                    if (index === 0) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
